@@ -1,21 +1,34 @@
+import React, { Component } from "react";
+import { BrowserRouter as Router } from "react-router-dom";
+import { Routes ,Route } from 'react-router-dom';
+import Topo from "./components/Topo";
+import Home from "./components/Home";
+import Frontend from "./components/Frontend";
+import Programacao from "./components/Programacao";
+import Design from "./components/Design";
+import Catalogo from "./components/Catalogo";
+import NotFound from "./components/NotFound";
+import Rodape from "./components/Rodape";
+import "./index.css";
 
-
-function App() {
-  return (
-    <>
-      <header className="topo">
-        <h1 className="logo"></h1>
-        <ul>
-          <li><a href=""></a></li>
-        </ul>
-      </header>
-      <main className="principal">
-        <h2>ùltimos Lançamentos</h2>
-        <div className="card">Card</div>
-      </main>
-      <footer className="rodape">Conteúdo cedidos pela editora Novatec &#8212; Copyright 2023</footer>
-    </>
-  );
+class App extends Component {
+  render() {
+    return (
+      <Router>
+        <Topo />
+        <Routes>
+          <Route exact path="/" render={Home} />
+          <Route exact path="/frontend" render={() => <Frontend />} />
+          <Route exact path="/programacao" render={() => <Programacao />} />
+          <Route exact path="/design" render={() => <Design />} />
+          <Route exact path="/catalogo" render={(props) => <Catalogo />} />
+          <Route component={NotFound} />
+        </Routes>
+        <Rodape />
+      </Router>
+    );
+  }
 }
 
 export default App;
+
