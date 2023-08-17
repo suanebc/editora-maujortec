@@ -10,18 +10,49 @@ import Catalogo from "./components/Catalogo";
 import NotFound from "./components/NotFound";
 import Rodape from "./components/Rodape";
 import "./index.css";
+import Livro from "./components/Livro";
+import axios from "axios";
 
 class App extends Component {
+  state = {
+    livros: [],
+  };
+  async componentDidMount() {
+    try {
+      const { data: livros } = await axios.get("/api/todosOsLivros.json");
+      this.setState({ livros });
+    } catch (error) {
+      console.log(error);
+      document
+        .querySelectorAll(".principal")[0]
+        .insertAdjacentHTML(
+          "beforeend",
+          "<p class='erro'>Mensagem de erro</p>"
+        );
+    }
+  }
+
   render() {
     return (
       <Router>
         <Topo />
         <Routes>
-          <Route exact path="/" render={Home} />
+          <Route exact path="/" 
+          render={() => <Home livros={this.state.livros} />} />
           <Route exact path="/frontend" render={() => <Frontend />} />
-          <Route exact path="/programacao" render={() => <Programacao />} />
-          <Route exact path="/design" render={() => <Design />} />
-          <Route exact path="/catalogo" render={(props) => <Catalogo />} />
+          <Route exact path="/programacao" render={<Frontend livros={this.state.livros} />} />
+          <Route exact path="/design" render={() => <Design livros={this.state.livros} />} />
+          <Route exact path="/catalogo" render={(props) => <Catalogo livros={this.state.livros}  />} />
+          <Route
+            path="/livro/:livroSlug"
+            render={(props) => {
+              const livro = this.state.livros.find(
+                (livro) => livro.slug === props.match.params.livroSlug
+              );
+              if (livro) return <Livro livro={livro} />;
+              else return <NotFound />;
+            }}
+          />
           <Route component={NotFound} />
         </Routes>
         <Rodape />
